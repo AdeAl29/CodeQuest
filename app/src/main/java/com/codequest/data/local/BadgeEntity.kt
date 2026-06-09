@@ -1,0 +1,10 @@
+package com.codequest.data.local
+
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "badges")
+data class BadgeEntity(
+    @PrimaryKey val badgeId: String,
+    val unlockedAt: Long = System.currentTimeMillis()
+)
