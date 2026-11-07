@@ -52,6 +52,7 @@ data class LessonModule(
     val estimatedMinutes: Int,
     val content: String,
     val codeExample: String,
+    val codeOutput: String = "",
     val keyConcept: String
 )
 
@@ -110,6 +111,17 @@ data class ModuleCardState(
     val attempts: Int
 )
 
+data class QuizAttemptSummary(
+    val id: Long,
+    val moduleId: String,
+    val moduleTitle: String,
+    val score: Int,
+    val correctAnswers: Int,
+    val totalQuestions: Int,
+    val durationSeconds: Long,
+    val completedAt: Long
+)
+
 data class LearningStats(
     val completedModules: Int = 0,
     val totalModules: Int = 0,
@@ -124,7 +136,8 @@ data class DashboardData(
     val user: UserPreferences,
     val stats: LearningStats,
     val recommendation: AdaptiveRecommendation,
-    val moduleCards: List<ModuleCardState>
+    val moduleCards: List<ModuleCardState>,
+    val recentAttempts: List<QuizAttemptSummary> = emptyList()
 )
 
 data class AdaptiveInput(

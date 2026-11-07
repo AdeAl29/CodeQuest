@@ -17,6 +17,7 @@ import com.codequest.data.model.LessonModule
 import com.codequest.data.model.ModuleCardState
 import com.codequest.data.model.ModuleProgress
 import com.codequest.data.model.ModuleStatus
+import com.codequest.data.model.QuizAttemptSummary
 import com.codequest.data.model.QuizQuestion
 import com.codequest.data.model.QuizResult
 import com.codequest.data.model.StartLevel
@@ -42,6 +43,10 @@ class LearningRepository(
         }
     }
 
+    fun observeModuleProgress(moduleId: String): Flow<ModuleProgress?> {
+        return progressDao.observeProgress(moduleId).map { it?.toDomain() }
+    }
+
     fun observeBadges(): Flow<List<BadgeProgress>> {
         return progressDao.observeBadges().map { unlocked ->
             val unlockedById = unlocked.associateBy { it.badgeId }
@@ -49,6 +54,24 @@ class LearningRepository(
                 BadgeProgress(
                     badge = badge,
                     unlockedAt = unlockedById[badge.id]?.unlockedAt
+                )
+            }
+        }
+    }
+
+    fun observeRecentAttempts(limit: Int = 5): Flow<List<QuizAttemptSummary>> {
+        return progressDao.observeQuizAttempts().map { entities ->
+            entities.take(limit).map { entity ->
+                val moduleTitle = getModule(entity.moduleId)?.title ?: entity.moduleId
+                QuizAttemptSummary(
+                    id = entity.id,
+                    moduleId = entity.moduleId,
+                    moduleTitle = moduleTitle,
+                    score = entity.score,
+                    correctAnswers = entity.correctAnswers,
+                    totalQuestions = entity.totalQuestions,
+                    durationSeconds = entity.durationSeconds,
+                    completedAt = entity.completedAt
                 )
             }
         }
@@ -84,13 +107,15 @@ class LearningRepository(
             userPreferences,
             observeStats(),
             observeRecommendation(),
-            observeModuleCards()
-        ) { user, stats, recommendation, moduleCards ->
+            observeModuleCards(),
+            observeRecentAttempts(limit = 4)
+        ) { user, stats, recommendation, moduleCards, recentAttempts ->
             DashboardData(
                 user = user,
                 stats = stats,
                 recommendation = recommendation,
-                moduleCards = moduleCards
+                moduleCards = moduleCards,
+                recentAttempts = recentAttempts
             )
         }
     }
@@ -99,6 +124,17 @@ class LearningRepository(
 
     suspend fun completeOnboarding(name: String, goal: LearningGoal, startLevel: StartLevel) {
         userPreferencesDataSource.completeOnboarding(name, goal, startLevel)
+    }
+
+    suspend fun updateProfile(name: String, goal: LearningGoal, startLevel: StartLevel) {
+        userPreferencesDataSource.updateProfile(name, goal, startLevel)
+    }
+
+    suspend fun resetAllProgress() {
+        progressDao.clearModuleProgress()
+        progressDao.clearQuizAttempts()
+        progressDao.clearBadges()
+        userPreferencesDataSource.resetUserProgress()
     }
 
     fun getQuestionsForModule(moduleId: String, difficulty: Difficulty): List<QuizQuestion> {
@@ -127,9 +163,9 @@ class LearningRepository(
         }
     }
 
-    suspend fun markLessonUnderstood(moduleId: String) {
+    suspend fun markLessonUnderstood(moduleId: String): Boolean {
         val existing = progressDao.getProgress(moduleId)
-        if (existing == null) {
+        return if (existing == null) {
             progressDao.upsertProgress(
                 ModuleProgressEntity(
                     moduleId = moduleId,
@@ -139,6 +175,7 @@ class LearningRepository(
             userPreferencesDataSource.updateDailyStreak()
             userPreferencesDataSource.addXp(15)
             refreshBadges()
+            true
         } else if (existing.status == ModuleStatus.AVAILABLE.name) {
             progressDao.upsertProgress(
                 existing.copy(
@@ -146,6 +183,13 @@ class LearningRepository(
                     updatedAt = System.currentTimeMillis()
                 )
             )
+            userPreferencesDataSource.updateDailyStreak()
+            userPreferencesDataSource.addXp(15)
+            refreshBadges()
+            true
+        } else {
+            userPreferencesDataSource.updateDailyStreak()
+            false
         }
     }
 
@@ -181,7 +225,12 @@ class LearningRepository(
         )
 
         val existing = progressDao.getProgress(moduleId)
-        val nextStatus = if (score >= 60) ModuleStatus.COMPLETED else ModuleStatus.IN_PROGRESS
+        val alreadyCompleted = existing?.status == ModuleStatus.COMPLETED.name
+        val nextStatus = if (score >= 60 || alreadyCompleted) {
+            ModuleStatus.COMPLETED
+        } else {
+            ModuleStatus.IN_PROGRESS
+        }
         progressDao.upsertProgress(
             ModuleProgressEntity(
                 moduleId = moduleId,
@@ -190,7 +239,11 @@ class LearningRepository(
                 attempts = (existing?.attempts ?: 0) + 1,
                 correctAnswers = (existing?.correctAnswers ?: 0) + correct,
                 wrongAnswers = (existing?.wrongAnswers ?: 0) + wrong,
-                completedAt = if (score >= 60) System.currentTimeMillis() else existing?.completedAt,
+                completedAt = if (score >= 60) {
+                    existing?.completedAt ?: System.currentTimeMillis()
+                } else {
+                    existing?.completedAt
+                },
                 updatedAt = System.currentTimeMillis()
             )
         )

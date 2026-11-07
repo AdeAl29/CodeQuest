@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.codequest.AppContainer
 import com.codequest.data.model.LessonModule
+import com.codequest.data.model.ModuleProgress
+import com.codequest.data.model.ModuleStatus
 import com.codequest.data.repository.LearningRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,8 +16,16 @@ import kotlinx.coroutines.launch
 
 data class LessonUiState(
     val module: LessonModule? = null,
-    val marking: Boolean = false
-)
+    val progress: ModuleProgress? = null,
+    val marking: Boolean = false,
+    val understoodJustMarked: Boolean = false,
+    val xpRewardGiven: Boolean = false
+) {
+    val isUnderstoodOrCompleted: Boolean
+        get() = understoodJustMarked ||
+            progress?.status == ModuleStatus.COMPLETED ||
+            (progress?.attempts ?: 0) > 0
+}
 
 class LessonViewModel(
     private val moduleId: String,
@@ -30,13 +40,24 @@ class LessonViewModel(
         viewModelScope.launch {
             repository.markLessonStarted(moduleId)
         }
+        viewModelScope.launch {
+            repository.observeModuleProgress(moduleId).collect { progress ->
+                _uiState.update { it.copy(progress = progress) }
+            }
+        }
     }
 
     fun markUnderstood() {
         viewModelScope.launch {
             _uiState.update { it.copy(marking = true) }
-            repository.markLessonUnderstood(moduleId)
-            _uiState.update { it.copy(marking = false) }
+            val rewarded = repository.markLessonUnderstood(moduleId)
+            _uiState.update {
+                it.copy(
+                    marking = false,
+                    understoodJustMarked = true,
+                    xpRewardGiven = rewarded
+                )
+            }
         }
     }
 

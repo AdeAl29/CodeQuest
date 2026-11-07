@@ -43,10 +43,18 @@ class UserPreferencesDataSource(private val context: Context) {
 
     suspend fun completeOnboarding(name: String, goal: LearningGoal, startLevel: StartLevel) {
         context.codeQuestDataStore.edit { prefs ->
-            prefs[Keys.name] = name.ifBlank { "Code Hero" }
+            prefs[Keys.name] = name.trim().ifBlank { "Code Hero" }
             prefs[Keys.goal] = goal.name
             prefs[Keys.startLevel] = startLevel.name
             prefs[Keys.onboardingCompleted] = true
+        }
+    }
+
+    suspend fun updateProfile(name: String, goal: LearningGoal, startLevel: StartLevel) {
+        context.codeQuestDataStore.edit { prefs ->
+            prefs[Keys.name] = name.trim().ifBlank { "Code Hero" }
+            prefs[Keys.goal] = goal.name
+            prefs[Keys.startLevel] = startLevel.name
         }
     }
 
@@ -75,6 +83,15 @@ class UserPreferencesDataSource(private val context: Context) {
             val nextStreak = if (lastDate == yesterday.toString()) currentStreak + 1 else 1
             prefs[Keys.streakDays] = nextStreak
             prefs[Keys.lastStudyDate] = today.toString()
+        }
+    }
+
+    suspend fun resetUserProgress() {
+        context.codeQuestDataStore.edit { prefs ->
+            prefs[Keys.xp] = 0
+            prefs[Keys.level] = 1
+            prefs[Keys.streakDays] = 0
+            prefs[Keys.lastStudyDate] = ""
         }
     }
 

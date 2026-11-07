@@ -13,6 +13,9 @@ interface ProgressDao {
     fun observeModuleProgress(): Flow<List<ModuleProgressEntity>>
 
     @Query("SELECT * FROM module_progress WHERE moduleId = :moduleId LIMIT 1")
+    fun observeProgress(moduleId: String): Flow<ModuleProgressEntity?>
+
+    @Query("SELECT * FROM module_progress WHERE moduleId = :moduleId LIMIT 1")
     suspend fun getProgress(moduleId: String): ModuleProgressEntity?
 
     @Query("SELECT * FROM module_progress")
@@ -38,4 +41,13 @@ interface ProgressDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun unlockBadge(badge: BadgeEntity)
+
+    @Query("DELETE FROM module_progress")
+    suspend fun clearModuleProgress()
+
+    @Query("DELETE FROM quiz_attempts")
+    suspend fun clearQuizAttempts()
+
+    @Query("DELETE FROM badges")
+    suspend fun clearBadges()
 }

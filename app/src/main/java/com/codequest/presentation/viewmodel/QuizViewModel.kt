@@ -41,22 +41,32 @@ class QuizViewModel(
     private val repository: LearningRepository,
     private val submitQuizUseCase: SubmitQuizUseCase
 ) : ViewModel() {
-    private val startedAt = System.currentTimeMillis()
+    private var startedAt = System.currentTimeMillis()
     private val _uiState = MutableStateFlow(QuizUiState())
     val uiState: StateFlow<QuizUiState> = _uiState.asStateFlow()
 
     init {
+        loadQuiz()
+    }
+
+    private fun loadQuiz() {
         viewModelScope.launch {
+            _uiState.update { it.copy(loading = true) }
+            startedAt = System.currentTimeMillis()
             repository.markLessonStarted(moduleId)
             val recommendation = repository.currentRecommendation()
             val module = repository.getModule(moduleId)
             val questions = repository.getQuestionsForModule(moduleId, recommendation.difficulty)
             _uiState.update {
-                it.copy(
+                QuizUiState(
                     loading = false,
                     module = module,
                     difficulty = recommendation.difficulty,
-                    questions = questions
+                    questions = questions,
+                    currentIndex = 0,
+                    selectedAnswers = emptyMap(),
+                    result = null,
+                    submitting = false
                 )
             }
         }
@@ -80,6 +90,10 @@ class QuizViewModel(
         } else {
             _uiState.update { it.copy(currentIndex = it.currentIndex + 1) }
         }
+    }
+
+    fun retryQuiz() {
+        loadQuiz()
     }
 
     private fun submit() {
