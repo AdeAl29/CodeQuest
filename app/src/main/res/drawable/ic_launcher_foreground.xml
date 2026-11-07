@@ -1,16 +1,140 @@
 <?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
+
+    <!-- Soft Drop Shadow Under Crest -->
     <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M26,30h56a8,8 0,0 1,8 8v32a8,8 0,0 1,-8 8H26a8,8 0,0 1,-8 -8V38a8,8 0,0 1,8 -8z" />
+        android:fillColor="#38020617"
+        android:pathData="M54,22L79,32.5V53.5C79,71 68.2,83.8 54,89.5C39.8,83.8 29,71 29,53.5V32.5L54,22Z" />
+
+    <!-- Outer Liquid Glass Shield Crest -->
+    <path android:pathData="M54,19L79,29.5V50.5C79,68 68.2,80.8 54,86.5C39.8,80.8 29,68 29,50.5V29.5L54,19Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:endX="79"
+                android:endY="86.5"
+                android:startX="29"
+                android:startY="19"
+                android:type="linear">
+                <item
+                    android:color="#40FFFFFF"
+                    android:offset="0.0" />
+                <item
+                    android:color="#1EFFFFFF"
+                    android:offset="0.5" />
+                <item
+                    android:color="#2E38BDF8"
+                    android:offset="1.0" />
+            </gradient>
+        </aapt:attr>
+        <aapt:attr name="android:strokeColor">
+            <gradient
+                android:endX="54"
+                android:endY="86.5"
+                android:startX="54"
+                android:startY="19"
+                android:type="linear">
+                <item
+                    android:color="#B3FFFFFF"
+                    android:offset="0.0" />
+                <item
+                    android:color="#33FFFFFF"
+                    android:offset="1.0" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Shield Specular Border Highlight -->
     <path
-        android:fillColor="#3556F6"
-        android:pathData="M35,48l11,-9v8h12a15,15 0,0 1,15 15v4h-8v-4a7,7 0,0 0,-7 -7H46v8z" />
+        android:fillColor="#00000000"
+        android:pathData="M54,19L79,29.5V50.5C79,68 68.2,80.8 54,86.5C39.8,80.8 29,68 29,50.5V29.5L54,19Z"
+        android:strokeColor="#88FFFFFF"
+        android:strokeWidth="1.4" />
+
+    <!-- Inner Dark Core Shield for High Contrast -->
+    <path android:pathData="M54,23.5L74.5,32.2V50.2C74.5,64.8 65.5,75.8 54,81C42.5,75.8 33.5,64.8 33.5,50.2V32.2L54,23.5Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:endX="54"
+                android:endY="81"
+                android:startX="54"
+                android:startY="23.5"
+                android:type="linear">
+                <item
+                    android:color="#E60F172A"
+                    android:offset="0.0" />
+                <item
+                    android:color="#E61E1B4B"
+                    android:offset="1.0" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Left Code Bracket '<' -->
     <path
-        android:fillColor="#7C3AED"
-        android:pathData="M38,68h32a4,4 0,0 1,0 8H38a4,4 0,0 1,0 -8z" />
+        android:fillColor="#00000000"
+        android:pathData="M45.5,43L37.5,51L45.5,59"
+        android:strokeColor="#38BDF8"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:strokeWidth="4.2" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M45.5,43L37.5,51L45.5,59"
+        android:strokeColor="#FFFFFF"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:strokeWidth="2.4" />
+
+    <!-- Right Code Bracket '>' -->
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M62.5,43L70.5,51L62.5,59"
+        android:strokeColor="#A855F7"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:strokeWidth="4.2" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M62.5,43L70.5,51L62.5,59"
+        android:strokeColor="#FFFFFF"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:strokeWidth="2.4" />
+
+    <!-- Center Golden Quest Lightning / Sword Slash -->
+    <path android:pathData="M56.8,35.5L47.5,51.2H54.2L51.2,66.5L60.5,50.8H53.8L56.8,35.5Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:endX="54"
+                android:endY="66.5"
+                android:startX="54"
+                android:startY="35.5"
+                android:type="linear">
+                <item
+                    android:color="#FEF08A"
+                    android:offset="0.0" />
+                <item
+                    android:color="#F59E0B"
+                    android:offset="0.6" />
+                <item
+                    android:color="#EA580C"
+                    android:offset="1.0" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Crown 4-Point Quest Star Sparkle -->
+    <path
+        android:fillColor="#FDE047"
+        android:pathData="M54,26.5L55.4,30.1L59,31.5L55.4,32.9L54,36.5L52.6,32.9L49,31.5L52.6,30.1Z" />
+
+    <!-- Bottom XP Level Gem Indicator -->
+    <path
+        android:fillColor="#38BDF8"
+        android:pathData="M54,69.5L57.2,72.7L54,75.9L50.8,72.7Z" />
 </vector>

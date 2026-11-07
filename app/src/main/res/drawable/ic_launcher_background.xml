@@ -1,8 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle">
-    <gradient
-        android:angle="135"
-        android:endColor="#7C3AED"
-        android:startColor="#1D4ED8" />
-</shape>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Deep Rich Cosmic Gradient Base -->
+    <path android:pathData="M0,0h108v108h-108z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:endX="108"
+                android:endY="108"
+                android:startX="0"
+                android:startY="0"
+                android:type="linear">
+                <item
+                    android:color="#0F172A"
+                    android:offset="0.0" />
+                <item
+                    android:color="#1E3A8A"
+                    android:offset="0.48" />
+                <item
+                    android:color="#5B21B6"
+                    android:offset="1.0" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Top-Left Cyan Aurora Radial Glow -->
+    <path android:pathData="M0,0h108v108h-108z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:centerX="22"
+                android:centerY="18"
+                android:gradientRadius="68"
+                android:type="radial">
+                <item
+                    android:color="#5506B6D4"
+                    android:offset="0.0" />
+                <item
+                    android:color="#222563EB"
+                    android:offset="0.55" />
+                <item
+                    android:color="#00000000"
+                    android:offset="1.0" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Bottom-Right Electric Violet Radial Glow -->
+    <path android:pathData="M0,0h108v108h-108z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:centerX="88"
+                android:centerY="90"
+                android:gradientRadius="64"
+                android:type="radial">
+                <item
+                    android:color="#66A855F7"
+                    android:offset="0.0" />
+                <item
+                    android:color="#227C3AED"
+                    android:offset="0.6" />
+                <item
+                    android:color="#00000000"
+                    android:offset="1.0" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Subtle Glass Grid Concentric Rings -->
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M54,54m-42,0a42,42 0,1 1,84 0a42,42 0,1 1,-84 0"
+        android:strokeColor="#14FFFFFF"
+        android:strokeWidth="0.8" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M54,54m-33,0a33,33 0,1 1,66 0a33,33 0,1 1,-66 0"
+        android:strokeColor="#1AFFFFFF"
+        android:strokeWidth="0.8" />
+</vector>
